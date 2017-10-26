@@ -40,7 +40,7 @@ public class EditerCollaborateursControlle extends HttpServlet {
 		}
 		else{
 			resp.setContentType("text/html"); 
-		 
+			resp.setStatus(201);
 			// code HTML ecrit dans le corps de la reponse 
 			resp.getWriter().write("<h1>La servlet vérifie que les parametres suivants sont renseignes</h1>" 
 					+ "<ul>" 
@@ -54,6 +54,8 @@ public class EditerCollaborateursControlle extends HttpServlet {
 					+"<li>prenom="
 					+ prenom + "</li>"+ 
 					"</ul>");
+			
 		}	
+		
 	}
 }
