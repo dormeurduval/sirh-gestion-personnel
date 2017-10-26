@@ -33,5 +33,11 @@
 	</dependencies>
 	<build>
 		<finalName>sgp</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 	</build>
 </project>
