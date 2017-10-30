@@ -1,6 +1,8 @@
 package dev.sgp.web;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,53 +11,45 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class EditerCollaborateursControlle extends HttpServlet {
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// recupere la valeur d'un parametre dont le nom est avecPhoto 
-		String matricule="";
-		String s="";
-		List<String>l = new ArrayList<String>();
-		
-		matricule = req.getParameter("matricule");
-		if(matricule==null)
-			s+="matricule ";
-		String titre="";
-		titre = req.getParameter("titre");
-		if(titre==null)
-			s+="titre "; 
-		String nom="";
-		
-		nom = req.getParameter("nom");
-		if(nom==null)
-			s+="nom "; 
-		String prenom="";
-		prenom = req.getParameter("prenom");
-		if(prenom==null)
-			s+="prenom";
-		
+import dev.sgp.entite.*;
+import dev.sgp.service.CollaborateurService;
+import dev.sgp.service.DepartementService;
+import dev.sgp.util.Constantes;
 
-		if(!s.equals("")){
-			resp.sendError(400,"Ce qui est attendu "+s);
+public class EditerCollaborateursControlle extends HttpServlet {
+	CollaborateurService collabService = Constantes.COLLAB_SERVICE;
+	DepartementService collabDepartement = Constantes.COLLAB_DEPART;
+	
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// utilisation du service
+
+		req.getRequestDispatcher("/WEB-INF/views/collab/nouveauCollaborateur.jsp").forward(req,resp);
+		
+	}
+	
+	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// recupere la valeur d'un parametre dont le nom est avecPhoto 
+		String nom=req.getParameter("nom");
+		String prenom=req.getParameter("prenom");
+		String dateBirth=req.getParameter("birthdate");
+		String numSociale=req.getParameter("sociale");
+		String adresse=req.getParameter("adresse");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+		Collaborateur collaborateur=
+		new Collaborateur(nom,prenom,LocalDate.parse(dateBirth,formatter),adresse,numSociale);
+		if(collaborateur.isValide()){
+			resp.setStatus(200);
+			collabService.sauvegarderCollaborateur(collaborateur);
+		
+			req.setAttribute("listCollabs",collabService.listerCollaborateurs());
+			req.setAttribute("listDeparts",collabDepartement.listerDepartements());
+			req.getRequestDispatcher("/WEB-INF/views/collab/listerCollaborateurs.jsp").forward(req,resp);
 		}
 		else{
-			resp.setContentType("text/html"); 
-			resp.setStatus(201);
-			// code HTML ecrit dans le corps de la reponse 
-			resp.getWriter().write("<h1>La servlet vérifie que les parametres suivants sont renseignes</h1>" 
-					+ "<ul>" 
-					+ "<li>matricule="
-					+ matricule 
-					+ "</li>" 
-					+ "<li>titre="
-					+ titre + "</li>" + 
-					"<li>nom="
-					+ nom + "</li>" 
-					+"<li>prenom="
-					+ prenom + "</li>"+ 
-					"</ul>");
-			
-		}	
-		
+			resp.sendError(400);
+		}
 	}
 }

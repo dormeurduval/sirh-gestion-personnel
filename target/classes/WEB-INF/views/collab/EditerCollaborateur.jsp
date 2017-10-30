@@ -37,35 +37,10 @@
 
 	<div class="container">
 		<div class="row">
-			<h1>Les Collaborateurs</h1>
-		</div>
-		<form class="form-search">
-			<div class="input-append">
-
-				Rechercher un nom ou un prénom qui commence par : <input type="text"
-					class="span2 search-query">
-				<button type="submit" class="btn">Rechercher</button>
-				<input type="checkbox" name="active" value="1" style="margin-left : 100px"> voir les collaborateurs désactivés</input>
-				<br /> Filtrer par déppartement : <select>
-				<%
-					List<Departement> departs = (List<Departement>) request.getAttribute("listDeparts");
-					if(departs != null)
-					for (Departement depart : departs) {
-				%>
-				
-					<option value="volvo"><%=depart.getNom()%></option>
-				<%}
-				%>
-				</select>
-			</div>
-			<br />
-		</form>
-		<div class="row">
 			
 			<%
-				List<Collaborateur> collabs = (List<Collaborateur>) request.getAttribute("listCollabs");
-				if(collabs != null)
-				for (Collaborateur col : collabs) {
+				Collaborateur col = (Collaborateur) request.getAttribute("col");
+
 			%>
 
 			<div class="row-sm-3">
@@ -84,16 +59,9 @@
 							 <br><i class="glyphicon glyphicon-envelope"></i>  <%=col.getEmailPro()%>
 							 <br><i class="glyphicon glyphicon-phone"></i> <%=col.getTelephone() %>
 						</p>
-						<p>
-							<button type="button" class="btn" onclick="editer(col.getMatricule())">Editer</button>
-						</p> 
 					</div>
 				</div>
 			</div>
-
-				<%
-					}
-				%>
 
 		</div>
 	</div>
